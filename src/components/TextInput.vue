@@ -31,7 +31,7 @@ onMounted(() => {
 
 <template>
   <div :class="['me-textfield', { focused: isFocused, 'has-value': hasValue }]">
-    <label for="input">Title</label>
+    <label for="input">Titlhge</label>
     <input ref="inputRef" id="input" type="text" />
     <div class="me-textfield__help">
       <info-icon class="me-help-icon" />
@@ -64,7 +64,7 @@ onMounted(() => {
     color: var(--tf-label-color);
     position: absolute;
     left: 20px;
-    top: 20px;
+    top: 19px;
     z-index: 1;
     transform-origin: 0 0;
     transition: all 0.2s ease-out;
@@ -112,11 +112,11 @@ onMounted(() => {
   &.focused,
   &.has-value {
     label {
+      transform: scale(0.75);
       left: 8px;
-      top: -10px;
+      top: -8px;
       background: var(--tf-focused-label-bg);
       padding: 0px 8px;
-      transform: scale(0.75);
     }
   }
 }
