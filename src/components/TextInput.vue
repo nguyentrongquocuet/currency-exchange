@@ -2,6 +2,12 @@
 import { onMounted, ref, shallowRef } from 'vue'
 import InfoIcon from '@/assets/Info.svg?component'
 
+const props = defineProps<{
+  value?: string | number
+}>()
+
+console.log('propsppp', props)
+
 const inputRef = shallowRef<HTMLInputElement>()
 const hasValue = ref(false)
 const isFocused = ref(false)

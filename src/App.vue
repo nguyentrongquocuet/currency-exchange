@@ -3,7 +3,10 @@ import TextInput from '@/components/TextInput.vue'
 </script>
 
 <template>
-  <TextInput />
+  <TextInput
+    aria-roledescription="This is textfield"
+    onclick="console.log('hello world')"
+  />
 </template>
 
 <style scoped>
