@@ -66,7 +66,9 @@ onMounted(() => {
     left: 20px;
     top: 20px;
     z-index: 1;
+    transform-origin: 0 0;
     transition: all 0.2s ease-out;
+    transition-property: transform padding;
   }
 
   input {
@@ -110,12 +112,11 @@ onMounted(() => {
   &.focused,
   &.has-value {
     label {
-      font-size: 12px;
-      line-height: 20px;
       left: 8px;
       top: -10px;
       background: var(--tf-focused-label-bg);
       padding: 0px 8px;
+      transform: scale(0.75);
     }
   }
 }
