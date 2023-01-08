@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import store from '@/store'
+import { debounce } from '@/utils/functions'
 import { useExchange } from '@/composable'
 import FeesSection from '@/components/FeesSection.vue'
 import CurrencySelector from '@/components/CurrencySelector.vue'
-import TextInput from '@/components/TextInput.vue'
 import ExchangeInput from './ExchangeInput.vue'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 
@@ -19,17 +19,6 @@ const inputState = ref<InputState>({
   from: 'USD',
   to: 'USD',
 })
-
-const debounce = (fn: any, time = 500) => {
-  let timeout: number
-
-  const newFn = (...inputs: any) => {
-    window.clearTimeout(timeout)
-    timeout = window.setTimeout(fn, time, ...inputs)
-  }
-
-  return newFn
-}
 
 const isLoading = ref(false)
 const hasError = ref(false)
@@ -63,6 +52,12 @@ const onChangeOutCurrency = (currency: string) => {
 }
 
 const onError = () => (hasError.value = true)
+
+defineExpose({
+  output,
+  hasError,
+  isLoading,
+})
 </script>
 
 <template>

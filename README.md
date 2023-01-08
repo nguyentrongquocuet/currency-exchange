@@ -1,18 +1,22 @@
-# Vue 3 + TypeScript + Vite
+# Assignment Notes
+## Scenario assumption:
+* User already logged in and required data is fetched
+* User has separated amount for each currency
+* Exchange rates, fees, base-currency are controlled by the api
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Project overview
+### Functional
+* Text input with options to format input and output value
+* Exchange between multiple currency with fees
+* Dropdown (don't have navigation by keyboard support)
+* Loading skeleton on exchange
 
-## Recommended IDE Setup
+### Technical stack: VueJS, Typescript, SCSS
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+### Styling approach
+* Vanilla CSS with SCSS
+* Style inside component with hardcoding spacing, colors, typography styles..., im not building a design system
 
-## Type Support For `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+### Known issues
+* Unexpected auto-cast value from numeric string when the input gets out of MaxInteger
+* Not yet support polling rates, fees, user-balance

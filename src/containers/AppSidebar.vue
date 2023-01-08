@@ -82,7 +82,6 @@ const toggleSidebarVisibility = () => {
   box-shadow: 0px 3px 7px #d7d9de;
   border-radius: 4px;
   max-height: calc(100vh - 32px);
-  margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
   display: flex;
@@ -126,6 +125,7 @@ const toggleSidebarVisibility = () => {
 @media screen and (max-width: 767px) {
   .app-sidebar {
     margin-left: 0;
+    margin-top: 16px;
   }
 
   .app-sidebar-toggle {
