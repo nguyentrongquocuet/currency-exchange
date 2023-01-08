@@ -23,8 +23,6 @@ export const useExchange = (input: Ref<Input>) => {
   watch(
     input,
     () => {
-      console.log('calling hook')
-
       const feeAmount = store.getters.feeAmountOf(
         input.value.amount,
         input.value.from

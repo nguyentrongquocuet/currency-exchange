@@ -1,5 +1,5 @@
 import { GlobalState, MarketRates, UserAmount } from '@/types'
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 
 const repository = reactive<{ state: GlobalState }>({
   state: {
@@ -123,11 +123,18 @@ const getters = {
   currencyNameOf: (currency: string) => {
     return repository.state.currencyNames[currency] || ''
   },
+  baseCurrency: () => repository.state.baseCurrency,
+  availableCurrencies: () => Object.keys(repository.state.rates),
 }
 
 const store = {
   getters,
   commit,
+  repository,
 }
+
+setInterval(() => {
+  repository.state.user.amount.USD += 1
+}, 2000)
 
 export default store

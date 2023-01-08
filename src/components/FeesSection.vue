@@ -17,7 +17,7 @@ const props = withDefaults(
 </script>
 
 <template>
-  <div>
+  <div :class="{ loading }">
     <ul>
       <li>
         <MinusIcon />
@@ -53,6 +53,12 @@ ul {
   }
 }
 
+.loading li span {
+  color: transparent;
+  background: #fafafa;
+  animation: wave 0.3s ease-in infinite alternate;
+}
+
 li {
   display: flex;
   align-items: center;
@@ -62,6 +68,17 @@ li {
   span {
     font-size: 12px;
     line-height: 20px;
+    transition: color 0.1s linear;
+  }
+}
+
+@keyframes wave {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.5;
   }
 }
 </style>

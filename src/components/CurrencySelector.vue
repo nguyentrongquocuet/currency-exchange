@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import store from '@/store'
 import { useClickOutside } from '@/composable'
 import ArrowDown from '@/assets/ArrowDown.svg?component'
-import store from '@/store'
-import { ref } from 'vue'
 
 const props = defineProps<{
   currency?: string
   label?: string
+  availableCurrencies: string[]
 }>()
 
 const emit = defineEmits<{
@@ -15,7 +16,6 @@ const emit = defineEmits<{
 
 const getCurrencyIconUrl = (currency: string) => `./${currency}_Balance.svg`
 
-const AVAILABLE_CURRENCIES = ['USD', 'EUR', 'PLN', 'MX', 'GBP', 'CAD']
 const expanded = ref(false)
 
 const wrapperRef = ref<HTMLDivElement | null>(null)
@@ -59,7 +59,7 @@ const onSelectCurrency = (newCurrency: string) => {
     <!-- Dropdown -->
     <div v-if="expanded" class="ce-popover">
       <ul class="ce-cs__dropdown">
-        <template :key="currency" v-for="currency in AVAILABLE_CURRENCIES">
+        <template :key="currency" v-for="currency in props.availableCurrencies">
           <li
             :class="{ selected: currency === props.currency }"
             @click="() => onSelectCurrency(currency)"
@@ -119,6 +119,7 @@ const onSelectCurrency = (newCurrency: string) => {
 
   img {
     width: 40px;
+    height: 24px;
   }
 }
 

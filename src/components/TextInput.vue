@@ -31,10 +31,6 @@ const emit = defineEmits<{
   (name: 'input', e: string): void
 }>()
 
-const attrs = useAttrs()
-
-console.log('attrs', attrs, props)
-
 const innerValue = ref(props.value || props.defaultValue || '')
 const uncontrolled = ref(props.value === undefined)
 const inputRef = shallowRef<HTMLInputElement>()
@@ -162,25 +158,15 @@ watch(
     margin-top: 4px;
     margin-left: 14.5px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
 
     .ce-help-icon {
       width: 12px;
       height: 12px;
+      flex-shrink: 0;
     }
   }
-
-  /* &:focus-within {
-    input {
-      border-color: var(--tf-focused-border-color);
-    }
-
-    label {
-      color: var(--tf-focused-label-color);
-      pointer-events: all;
-    }
-  } */
 
   &.focused,
   &.has-value {

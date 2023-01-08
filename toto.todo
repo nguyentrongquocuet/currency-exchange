@@ -9,5 +9,8 @@ Exchange fucntions:
   - big number
 
 Styling:
-  - dropdown
-  - loading
+  - dropdown: done
+  - loading: eww
+
+Current limitation:
+  - value lager than MaxInteger will be floor back to smaller number(regex matching with `e` problem)

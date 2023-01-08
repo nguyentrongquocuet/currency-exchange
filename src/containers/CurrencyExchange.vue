@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import store from '@/store'
+import { useExchange } from '@/composable'
 import FeesSection from '@/components/FeesSection.vue'
 import CurrencySelector from '@/components/CurrencySelector.vue'
 import TextInput from '@/components/TextInput.vue'
-import { useExchange } from '@/composable'
-import { ref } from 'vue'
-import CurrencyInput from '@/components/CurrencyInput.vue'
+import ExchangeInput from './ExchangeInput.vue'
 
 interface InputState {
   amount: number
@@ -18,44 +18,43 @@ const inputState = ref<InputState>({
   from: 'USD',
   to: 'USD',
 })
-const output = useExchange(inputState)
 
-const userAmount = store.getters.userAmountOf(inputState.value.from)
+const debounce = (fn: any, time = 500) => {
+  let timeout: number
+
+  const newFn = (...inputs: any) => {
+    window.clearTimeout(timeout)
+    timeout = window.setTimeout(fn, time, ...inputs)
+  }
+
+  return newFn
+}
+
+const isLoading = ref(false)
+
+const output = useExchange(inputState)
+const availableCurrencies = store.getters.availableCurrencies()
+
+const debouncedSetState = debounce((newState: InputState) => {
+  isLoading.value = false
+  inputState.value = newState
+}, 500)
+
+const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
+  const newState = {
+    ...inputState.value,
+    ...update,
+  }
+  isLoading.value = true
+  debouncedSetState(newState)
+}
 </script>
 
 <template>
   <div class="container">
     <div class="ce-container">
       <!-- Input -->
-      <div class="ce-amount-currency ce-amount-currency-input">
-        <div class="ce-currency">
-          <CurrencySelector
-            @change="(c) => (inputState.from = c)"
-            :currency="inputState.from"
-            class="ce-input-selector"
-          >
-            <template #label>
-              <div class="cs-user-amount">
-                <span
-                  :title="userAmount.toString()"
-                  class="cs-user-amount__amount"
-                >
-                  {{ userAmount }}
-                </span>
-                <span class="cs-user-amount__caption"> Available </span>
-              </div>
-            </template>
-          </CurrencySelector>
-        </div>
-        <div class="ce-amount">
-          <CurrencyInput
-            :value="inputState.amount"
-            @input="(v) => (inputState.amount = Number.parseFloat(v))"
-            label="You send"
-          />
-        </div>
-      </div>
-
+      <ExchangeInput @change="onPickInputMoney" />
       <!-- Fees -->
       <FeesSection
         class="ce-fees"
@@ -63,6 +62,7 @@ const userAmount = store.getters.userAmountOf(inputState.value.from)
         :out-currency="inputState.to"
         :fee-amount="output.feeAmount"
         :rate="output.rate"
+        :loading="isLoading"
       />
 
       <!-- Output -->
@@ -71,6 +71,7 @@ const userAmount = store.getters.userAmountOf(inputState.value.from)
           <CurrencySelector
             :currency="inputState.to"
             @change="(c) => (inputState.to = c)"
+            :available-currencies="availableCurrencies"
           />
         </div>
         <div class="ce-amount">
@@ -78,6 +79,7 @@ const userAmount = store.getters.userAmountOf(inputState.value.from)
             :readonly="true"
             :value="output.amountAfterExchange"
             label="You get"
+            help-text="Exchange rate might change when user receives the fund"
           />
         </div>
       </div>
@@ -138,11 +140,6 @@ const userAmount = store.getters.userAmountOf(inputState.value.from)
     position: relative;
     /* 38(auto center) - 31 */
     top: -7px;
-  }
-
-  .ce-amount {
-    padding-top: 18px;
-    align-items: flex-start;
   }
 }
 

@@ -17,10 +17,20 @@ const getDecimalTransform = (digitsAfterPoint?: number) => {
       result = matchedDecimalResult[0]
     }
 
-    return result || '0'
+    return result
   }
 
   return strToDecimalStr
 }
 
 export const appDecimalTransform = getDecimalTransform(5)
+
+export const toNumber = (input: number | string) => {
+  const num = Number.parseFloat(input.toString())
+
+  if (Number.isNaN(num)) {
+    return 0
+  }
+
+  return num
+}
