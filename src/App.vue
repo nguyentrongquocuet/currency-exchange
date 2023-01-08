@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import SpecifyAmount from './containers/SpecifyAmount.vue'
+import { onMounted } from 'vue'
+import AppMain from './containers/AppMain.vue'
+import AppSidebar from './containers/AppSidebar.vue'
+import MiniAppButton from './containers/MiniAppButton.vue'
+import StepHeader from './containers/StepHeader.vue'
+
+onMounted(() => {
+  const container = document.querySelector('#app') as HTMLElement
+
+  if (container) {
+    container.addEventListener('transitionstart', () => {
+      container.style.overflow = 'visible'
+    })
+
+    container.addEventListener('transitionend', () => {
+      if (container.classList.contains('sidebar-visible')) {
+        container.style.overflow = 'hidden'
+      } else {
+        container.style.overflow = 'visible'
+      }
+    })
+  }
+})
 </script>
 
 <template>
-  <SpecifyAmount />
+  <AppSidebar>
+    <template #header>
+      <StepHeader />
+    </template>
+    <template #featured>
+      <MiniAppButton />
+    </template>
+  </AppSidebar>
+  <AppMain />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>

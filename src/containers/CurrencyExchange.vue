@@ -31,6 +31,7 @@ const debounce = (fn: any, time = 500) => {
 }
 
 const isLoading = ref(false)
+const hasError = ref(false)
 
 const output = useExchange(inputState)
 const availableCurrencies = store.getters.availableCurrencies()
@@ -46,42 +47,43 @@ const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
     ...update,
   }
   isLoading.value = true
+  hasError.value = false
   debouncedSetState(newState)
 }
+
+const onError = () => (hasError.value = true)
 </script>
 
 <template>
-  <div class="container">
-    <div class="ce-container">
-      <!-- Input -->
-      <ExchangeInput @change="onPickInputMoney" />
-      <!-- Fees -->
-      <FeesSection
-        class="ce-fees"
-        :in-currency="inputState.from"
-        :out-currency="inputState.to"
-        :fee-amount="output.feeAmount"
-        :rate="output.rate"
-        :loading="isLoading"
-      />
+  <div class="ce-container">
+    <!-- Input -->
+    <ExchangeInput @change="onPickInputMoney" @error="onError" />
+    <!-- Fees -->
+    <FeesSection
+      class="ce-fees"
+      :in-currency="inputState.from"
+      :out-currency="inputState.to"
+      :fee-amount="output.feeAmount"
+      :rate="output.rate"
+      :loading="isLoading || hasError"
+    />
 
-      <!-- Output -->
-      <div class="ce-amount-currency ce-amount-currency-output">
-        <div class="ce-currency">
-          <CurrencySelector
-            :currency="inputState.to"
-            @change="(c) => (inputState.to = c)"
-            :available-currencies="availableCurrencies"
-          />
-        </div>
-        <div class="ce-amount">
-          <TextInput
-            :readonly="true"
-            :value="output.amountAfterExchange"
-            label="You get"
-            help-text="Exchange rate might change when user receives the fund"
-          />
-        </div>
+    <!-- Output -->
+    <div class="ce-amount-currency ce-amount-currency-output">
+      <div class="ce-currency">
+        <CurrencySelector
+          :currency="inputState.to"
+          @change="(c) => (inputState.to = c)"
+          :available-currencies="availableCurrencies"
+        />
+      </div>
+      <div class="ce-amount">
+        <TextInput
+          :readonly="true"
+          :value="hasError ? 0 : output.amountAfterExchange"
+          label="Recipient gets"
+          help-text="Exchange rate might change when user receives the fund"
+        />
       </div>
     </div>
   </div>
@@ -113,6 +115,7 @@ const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
 }
 
 .ce-amount-currency-input {
+  z-index: 2;
   /* Make it pixel perfect :D */
   .ce-cs__selected-currency {
     position: relative;
@@ -176,7 +179,7 @@ const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
     font-size: 22px;
     line-height: 27px;
     font-weight: 600;
-    max-width: 75px;
+    width: 70px;
     text-overflow: ellipsis;
     overflow: hidden;
   }
@@ -193,19 +196,12 @@ const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
   margin-right: 37px;
 }
 
-.message {
-  margin-top: 29px;
-}
-
 @media screen and (max-width: 767px) {
   .ce-container {
-    width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
-
     &::before {
-      width: calc(100% - 2 * 16px);
-      left: 16px;
+      width: 100%;
+      padding: 0;
+      left: 0;
     }
   }
 
@@ -224,7 +220,7 @@ const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
   }
   .cs-user-amount {
     &__amount {
-      max-width: 160px;
+      width: 160px;
     }
   }
 }

@@ -4,9 +4,27 @@
 }
 
 #app {
-  margin: 0 auto;
-  margin-top: 200px;
-  // width: fit-content;
+  margin: 16px auto;
+	display: flex;
+	height: calc(100vh - 32px);
+	transition: transform .3s ease-in-out;
+}
+
+@media screen and (max-width: 767px) {
+	#app {
+		height: auto;
+		margin: 0;
+		width: 100vw;
+		transform: translateX(-228px);
+
+		.app-sidebar {
+			margin-right: 0;
+		}
+
+		&.sidebar-visible {
+			transform: translateX(0px);
+		}
+	}
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 

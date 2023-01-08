@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import store from '@/store'
-import { toNumber } from '@/utils'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 import CurrencySelector from '@/components/CurrencySelector.vue'
 
@@ -14,6 +13,7 @@ interface InputState {
 
 const emit = defineEmits<{
   (name: 'change', state: InputState): void
+  (name: 'error'): void
 }>()
 
 const inputState = ref<InputState>({
@@ -32,6 +32,7 @@ const availableCurrencies = computed(() => store.getters.availableCurrencies())
 const onAmountChange = (amount: number) => {
   if (amount > userAmount.value) {
     error.value = NOT_ENOUGH_MONEY
+    emit('error')
     return
   } else {
     error.value = ''
@@ -84,6 +85,7 @@ const onCurrencyChange = (currency: string) => {
 <style lang="scss">
 .ce-amount__input {
   position: relative;
+  width: 100%;
 
   .ce-input-error {
     position: absolute;

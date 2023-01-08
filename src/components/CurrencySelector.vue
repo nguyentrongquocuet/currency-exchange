@@ -99,7 +99,6 @@ const onSelectCurrency = (newCurrency: string) => {
 .ce-cs__label {
   display: flex;
   align-items: center;
-  height: 100%;
   padding: 24px 15px;
   cursor: pointer;
   box-shadow: 0px 3px 7px #d7d9de;
@@ -127,7 +126,7 @@ const onSelectCurrency = (newCurrency: string) => {
   width: fit-content;
   position: absolute;
   left: 0;
-  top: 120px;
+  bottom: calc(-200% - 16px);
   display: block;
   z-index: 1000;
 }
@@ -138,7 +137,7 @@ const onSelectCurrency = (newCurrency: string) => {
   box-shadow: 0px 3px 7px #d7d9de;
   border-radius: 4px;
   max-width: 300px;
-  height: 150px;
+  max-height: 200px;
   overflow-y: auto;
   padding: 4px;
   width: max-content;
