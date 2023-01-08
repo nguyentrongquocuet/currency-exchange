@@ -1,15 +1,41 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef } from 'vue'
+import { onMounted, ref, shallowRef, useAttrs, watch } from 'vue'
 import InfoIcon from '@/assets/Info.svg?component'
 
-const props = defineProps<{
-  value?: string | number
+const props = withDefaults(
+  defineProps<{
+    id?: string
+    label?: string | number
+    helpText?: string
+    placeholder?: string
+    required?: boolean
+    readonly?: boolean
+    type?: string
+    name?: string
+    value?: string
+    autocomplete?: boolean
+    defaultValue?: string
+  }>(),
+  {
+    type: 'text',
+    required: false,
+    readonly: false,
+    autocomplete: false,
+  }
+)
+
+const emit = defineEmits<{
+  (name: 'change', value: string): void
+  (name: 'input', value: string): void
 }>()
 
-console.log('propsppp', props)
+const attrs = useAttrs()
 
+console.log('attrs', attrs, props)
+
+const innerValue = ref(props.value || props.defaultValue || '')
+const uncontrolled = ref(props.value === undefined)
 const inputRef = shallowRef<HTMLInputElement>()
-const hasValue = ref(false)
 const isFocused = ref(false)
 
 onMounted(() => {
@@ -25,23 +51,48 @@ onMounted(() => {
     isFocused.value = false
   })
 
-  inputRef.value.addEventListener('change', (e) => {
+  const reactToChanges = (e: Event) => {
     if (!e.target) {
       return
     }
 
-    hasValue.value = !!(e.target as HTMLInputElement).value
-  })
+    if (uncontrolled.value) {
+      innerValue.value = (e.target as HTMLInputElement).value
+    }
+  }
+
+  inputRef.value.addEventListener('change', reactToChanges)
+  inputRef.value.addEventListener('input', reactToChanges)
 })
+
+watch(
+  () => props.value,
+  (newValue) => {
+    innerValue.value = newValue || ''
+  }
+)
 </script>
 
 <template>
-  <div :class="['me-textfield', { focused: isFocused, 'has-value': hasValue }]">
-    <label for="input">Titlhge</label>
-    <input ref="inputRef" id="input" type="text" />
-    <div class="me-textfield__help">
+  <div
+    :class="['me-textfield', { focused: isFocused, 'has-value': innerValue }]"
+  >
+    <label :for="props.id">{{ props.label }}</label>
+    <input
+      @change="(e) => emit('change', (e.target as HTMLInputElement).value)"
+      @input="(e) => emit('input', (e.target as HTMLInputElement).value)"
+      ref="inputRef"
+      :id="props.id"
+      :type="props.type"
+      :value="innerValue"
+      :placeholder="props.placeholder"
+      :readonly="props.readonly"
+      :required="props.required"
+      :autocomplete="props.autocomplete ? 'on' : 'off'"
+    />
+    <div v-if="props.helpText" class="me-textfield__help">
       <info-icon class="me-help-icon" />
-      <span> This is helptext</span>
+      <span> {{ props.helpText }}</span>
     </div>
   </div>
 </template>
@@ -59,6 +110,8 @@ onMounted(() => {
 
   position: relative;
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
 
   label,
   input {
@@ -75,6 +128,7 @@ onMounted(() => {
     transform-origin: 0 0;
     transition: all 0.2s ease-out;
     transition-property: transform padding;
+    pointer-events: none;
   }
 
   input {
@@ -83,6 +137,7 @@ onMounted(() => {
     padding: 16px 19px;
     border: 1px solid var(--tf-border-color);
     outline: none;
+    background: transparent;
 
     &:focus {
       border-color: var(--tf-focused-border-color);
@@ -112,6 +167,7 @@ onMounted(() => {
 
     label {
       color: var(--tf-focused-label-color);
+      pointer-events: all;
     }
   }
 
@@ -123,6 +179,7 @@ onMounted(() => {
       top: -8px;
       background: var(--tf-focused-label-bg);
       padding: 0px 8px;
+      pointer-events: all;
     }
   }
 }

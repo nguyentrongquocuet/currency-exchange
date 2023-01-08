@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import TextInput from '@/components/TextInput.vue'
+import CurrencyExchange from '@/containers/CurrencyExchange.vue'
 </script>
 
 <template>
-  <TextInput
-    aria-roledescription="This is textfield"
-    onclick="console.log('hello world')"
-  />
+  <CurrencyExchange />
 </template>
 
 <style scoped>
