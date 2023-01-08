@@ -1,0 +1,13 @@
+Exchange fucntions:
+  - convert amount of currency to base currency
+  - calculate fees based on base-currency, get back:
+    + fees in base currency
+    + left-over amount in base currency
+  - calculate result from left-over amount of base currency
+
+
+  - big number
+
+Styling:
+  - dropdown
+  - loading

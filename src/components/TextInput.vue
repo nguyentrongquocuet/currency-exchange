@@ -12,21 +12,23 @@ const props = withDefaults(
     readonly?: boolean
     type?: string
     name?: string
-    value?: string
+    value?: string | number
     autocomplete?: boolean
     defaultValue?: string
+    transformValue?: (value: string) => string
   }>(),
   {
     type: 'text',
     required: false,
     readonly: false,
     autocomplete: false,
+    transformValue: (v: string) => v,
   }
 )
 
 const emit = defineEmits<{
-  (name: 'change', value: string): void
-  (name: 'input', value: string): void
+  (name: 'change', e: string): void
+  (name: 'input', e: string): void
 }>()
 
 const attrs = useAttrs()
@@ -44,7 +46,7 @@ onMounted(() => {
   }
 
   inputRef.value.addEventListener('focus', () => {
-    isFocused.value = true
+    isFocused.value = !props.readonly
   })
 
   inputRef.value.addEventListener('blur', () => {
@@ -56,9 +58,19 @@ onMounted(() => {
       return
     }
 
+    const target = e.target as HTMLInputElement
+
+    const value = target.value
+
+    const result = props.transformValue ? props.transformValue(value) : value
+
+    target.value = result
+
     if (uncontrolled.value) {
-      innerValue.value = (e.target as HTMLInputElement).value
+      innerValue.value = result
     }
+
+    emit(e.type as any, result)
   }
 
   inputRef.value.addEventListener('change', reactToChanges)
@@ -68,19 +80,19 @@ onMounted(() => {
 watch(
   () => props.value,
   (newValue) => {
-    innerValue.value = newValue || ''
+    innerValue.value = props.transformValue
+      ? props.transformValue(newValue?.toString() || '')
+      : newValue || ''
   }
 )
 </script>
 
 <template>
   <div
-    :class="['me-textfield', { focused: isFocused, 'has-value': innerValue }]"
+    :class="['ce-textfield', { focused: isFocused, 'has-value': innerValue }]"
   >
     <label :for="props.id">{{ props.label }}</label>
     <input
-      @change="(e) => emit('change', (e.target as HTMLInputElement).value)"
-      @input="(e) => emit('input', (e.target as HTMLInputElement).value)"
       ref="inputRef"
       :id="props.id"
       :type="props.type"
@@ -90,15 +102,15 @@ watch(
       :required="props.required"
       :autocomplete="props.autocomplete ? 'on' : 'off'"
     />
-    <div v-if="props.helpText" class="me-textfield__help">
-      <info-icon class="me-help-icon" />
+    <div v-if="props.helpText" class="ce-textfield__help">
+      <info-icon class="ce-help-icon" />
       <span> {{ props.helpText }}</span>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-.me-textfield {
+.ce-textfield {
   --tf-input-color: #000000;
   --tf-label-color: #2e3a42;
   --tf-border-color: #070c11;
@@ -109,9 +121,9 @@ watch(
   --tf-focused-label-bg: #ffffff;
 
   position: relative;
-  margin-top: 8px;
   display: flex;
   flex-direction: column;
+  width: 100%;
 
   label,
   input {
@@ -124,7 +136,6 @@ watch(
     position: absolute;
     left: 20px;
     top: 19px;
-    z-index: 1;
     transform-origin: 0 0;
     transition: all 0.2s ease-out;
     transition-property: transform padding;
@@ -154,13 +165,13 @@ watch(
     align-items: center;
     gap: 8px;
 
-    .me-help-icon {
+    .ce-help-icon {
       width: 12px;
       height: 12px;
     }
   }
 
-  &:focus-within {
+  /* &:focus-within {
     input {
       border-color: var(--tf-focused-border-color);
     }
@@ -169,7 +180,7 @@ watch(
       color: var(--tf-focused-label-color);
       pointer-events: all;
     }
-  }
+  } */
 
   &.focused,
   &.has-value {

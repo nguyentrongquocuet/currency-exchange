@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import CurrencyExchange from '@/containers/CurrencyExchange.vue'
+import SpecifyAmount from './containers/SpecifyAmount.vue'
 </script>
 
 <template>
-  <CurrencyExchange />
+  <SpecifyAmount />
 </template>
 
 <style scoped>

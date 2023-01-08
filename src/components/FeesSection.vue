@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import ExportIcon from '@/assets/Export.svg?component'
 import MinusIcon from '@/assets/Minus.svg?component'
+
+const props = withDefaults(
+  defineProps<{
+    inCurrency: string
+    outCurrency: string
+    rate: number
+    feeAmount: number
+    loading?: boolean
+  }>(),
+  {
+    loading: false,
+  }
+)
 </script>
 
 <template>
@@ -8,11 +21,11 @@ import MinusIcon from '@/assets/Minus.svg?component'
     <ul>
       <li>
         <MinusIcon />
-        <span> 3.67 USD fees </span>
+        <span> {{ props.feeAmount }} {{ props.inCurrency }} fees </span>
       </li>
       <li>
         <ExportIcon />
-        <span> 0.854565 EUR exchange rate </span>
+        <span> {{ props.rate }} {{ props.outCurrency }} exchange rate </span>
       </li>
     </ul>
   </div>
@@ -23,7 +36,6 @@ ul {
   list-style: none;
   padding: 48px 12px;
   position: relative;
-  background: #edf6ff;
 
   display: flex;
   flex-direction: column;
@@ -45,7 +57,7 @@ li {
   display: flex;
   align-items: center;
   gap: 18px;
-  z-index: 1;
+  z-index: 0;
 
   span {
     font-size: 12px;
