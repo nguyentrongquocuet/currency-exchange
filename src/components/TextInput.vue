@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef, useAttrs, watch } from 'vue'
+import { onMounted, ref, shallowRef, watch } from 'vue'
 import InfoIcon from '@/assets/Info.svg?component'
 
 const props = withDefaults(
@@ -16,6 +16,7 @@ const props = withDefaults(
     autocomplete?: boolean
     defaultValue?: string
     transformValue?: (value: string) => string
+    transformOutput?: (value: string) => string
   }>(),
   {
     type: 'text',
@@ -23,6 +24,7 @@ const props = withDefaults(
     readonly: false,
     autocomplete: false,
     transformValue: (v: string) => v,
+    transformOutput: (v: string) => v,
   }
 )
 
@@ -66,7 +68,7 @@ onMounted(() => {
       innerValue.value = result
     }
 
-    emit(e.type as any, result)
+    emit(e.type as any, props.transformOutput(result))
   }
 
   inputRef.value.addEventListener('change', reactToChanges)

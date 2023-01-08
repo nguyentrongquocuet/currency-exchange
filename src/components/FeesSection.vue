@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ExportIcon from '@/assets/Export.svg?component'
 import MinusIcon from '@/assets/Minus.svg?component'
+import { formatNum } from '@/utils'
 
 const props = withDefaults(
   defineProps<{
@@ -21,11 +22,15 @@ const props = withDefaults(
     <ul>
       <li>
         <MinusIcon />
-        <span> {{ props.feeAmount }} {{ props.inCurrency }} fees </span>
+        <span>
+          {{ formatNum(props.feeAmount) }} {{ props.inCurrency }} fees
+        </span>
       </li>
       <li>
         <ExportIcon />
-        <span> {{ props.rate }} {{ props.outCurrency }} exchange rate </span>
+        <span>
+          {{ formatNum(props.rate) }} {{ props.outCurrency }} exchange rate
+        </span>
       </li>
     </ul>
   </div>

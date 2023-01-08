@@ -6,6 +6,7 @@ import FeesSection from '@/components/FeesSection.vue'
 import CurrencySelector from '@/components/CurrencySelector.vue'
 import TextInput from '@/components/TextInput.vue'
 import ExchangeInput from './ExchangeInput.vue'
+import CurrencyInput from '@/components/CurrencyInput.vue'
 
 interface InputState {
   amount: number
@@ -41,14 +42,24 @@ const debouncedSetState = debounce((newState: InputState) => {
   inputState.value = newState
 }, 500)
 
+const updateState = (newState?: InputState) => {
+  isLoading.value = true
+  hasError.value = false
+  debouncedSetState(newState || inputState.value)
+}
+
 const onPickInputMoney = (update: Pick<InputState, 'amount' | 'from'>) => {
   const newState = {
     ...inputState.value,
     ...update,
   }
-  isLoading.value = true
-  hasError.value = false
-  debouncedSetState(newState)
+
+  updateState(newState)
+}
+
+const onChangeOutCurrency = (currency: string) => {
+  inputState.value.to = currency
+  updateState()
 }
 
 const onError = () => (hasError.value = true)
@@ -73,14 +84,14 @@ const onError = () => (hasError.value = true)
       <div class="ce-currency">
         <CurrencySelector
           :currency="inputState.to"
-          @change="(c) => (inputState.to = c)"
+          @change="onChangeOutCurrency"
           :available-currencies="availableCurrencies"
         />
       </div>
       <div class="ce-amount">
-        <TextInput
+        <CurrencyInput
           :readonly="true"
-          :value="hasError ? 0 : output.amountAfterExchange"
+          :value="hasError || isLoading ? 0 : output.amountAfterExchange"
           label="Recipient gets"
           help-text="Exchange rate might change when user receives the fund"
         />
