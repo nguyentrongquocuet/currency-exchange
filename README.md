@@ -20,3 +20,9 @@
 ### Known issues
 * Unexpected auto-cast value from numeric string when the input gets out of MaxInteger
 * Not yet support polling rates, fees, user-balance
+
+
+### How to use
+#### Run dev preview: `npm run dev`
+#### Run prod preview: `npm run preview`
+#### Run prod build: `npm run build`
